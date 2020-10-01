@@ -1,0 +1,21 @@
+{
+  "name": "322_project",
+  "version": "1.0.0",
+  "description": "3/22/2020",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "sockets",
+    "p5",
+    "node"
+  ],
+  "author": "Dushyanth Ganesan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
