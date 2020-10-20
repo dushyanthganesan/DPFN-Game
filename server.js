@@ -4,9 +4,12 @@ let questions;
 let qLength;
 let qHandler;
 let qNum;
+let question = '';
+
 let express = require('express');
 let app = express();
-let server = app.listen(3000);
+let port = process.env.PORT || 3000;
+let server = app.listen(port);
 let pScore = 0;
 let dScore = 0;
 
@@ -32,6 +35,8 @@ function newConnection(socket) {
 	console.log(data);
 	if (data == 'host'){
 	clients = 0;
+  dScore = 0;
+  pScore = 0;
 	}
 	clients++;
 	let clientdata = {
@@ -152,14 +157,14 @@ function newConnection(socket) {
 //////////////////////////////////////////////////////////////////////
 ////////////////////******INPUT********/////////////////////
 
-
 let fs = require('fs');
 
-dquestions = fs.readFileSync('./doothsQuestions.txt').toString('utf-8').split('\r\n');
+dquestions = fs.readFileSync('./doothsQuestions.txt').toString('utf-8');
+dquestions = dquestions.split('\n');
 console.log(dquestions);
 
-pquestions = fs.readFileSync('./poothsQuestions.txt').toString('utf-8').split('\r\n');
-
+pquestions = fs.readFileSync('./poothsQuestions.txt').toString('utf-8');
+pquestions = pquestions.split('\n');
 
 ///////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -180,4 +185,4 @@ for (let ii = 0; ii < dquestions.length; ii++) {
 
 qLength = questions.length;
 console.log(qLength);
-console.log(questions);
+//console.log(questions);

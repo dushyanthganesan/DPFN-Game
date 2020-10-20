@@ -14,7 +14,7 @@ let initLevelHost = 0;
 let hostInitiating = 0;
 let qs = 0;
 let qNum = 0;
-let question;
+let question = '';
 let questionIsAsked = 0; 
 let inputCreated = 0;
 let inp, subButton, answer;
@@ -28,11 +28,13 @@ let askedNext = 0;
 let endGame = 0;
 let cw;
 let correctButton, wrongButton;
+let askedpin = 0;
+let pin;
 ////////////////////////////////////////////////////////////////////
 
 let joinQRimg, joinw, pConimg, dConimg, pAnsimg, dAnsimg, modern20, resultsbg, bgm, zip, startfx;
 function preload() {
-  joinQRimg = loadImage('images/JoinQR.png');
+  joinQRimg = loadImage('https://cdn.glitch.com/273afa4c-504e-4322-9a02-7053f756876e%2FJoinWebQR.png?v=1601554507118');
   pConimg 	= loadImage('images/pCon.png');
   dConimg 	= loadImage('images/dCon.png');
   logo 		= loadImage('images/DPFNLogo.png');
@@ -64,7 +66,7 @@ function setup() {
   textAlign(CENTER, CENTER);
   
   // socket = io.connect('http://192.168.1.12:3000');
-  socket = io.connect('http://10.0.0.17:3000');
+  socket = io.connect('https://dpfn.glitch.me/' || 'http://10.0.0.17:3000');
   socket.on('clientconnected',whoIsConnected);
   socket.on('startGame',startGame);
   socket.on('initLevel', initiate);
@@ -76,6 +78,14 @@ function setup() {
   socket.on('startResults', startResultsCB);
   socket.on('reset', nextSet);
   
+//   let pin = createInput("", "text");
+//   pin.position(w/2-100, 4*h/10);
+// 	pin.width = 200;
+//   while (pin != 2203) {
+    
+    
+//   }
+//   pin.hide();
   showButtons();
   
   
@@ -109,9 +119,19 @@ function startGame(data){
 }
 
 function showButtons(){
-	pButton = buttonID('Pooths', w/2, 1*h/7)
-    hostButton = buttonID('Host', w/2, 3*h/7)
-    dButton = buttonID('Dooths', w/2, 5*h/7)	
+  pButton = buttonID('Pooths', w/2, 1*h/7)
+  pButton.id('pButton');
+  pButton.class('fade-in');
+  
+  hostButton = buttonID('Host', w/2, 3*h/7)
+  hostButton.id('hostButton');
+  hostButton.class('fade-in');
+  
+  dButton = buttonID('Dooths', w/2, 5*h/7)
+  dButton.id('dButton');
+  dButton.class('fade-in');
+  
+  
 }
 
 function initiate(data){
@@ -205,32 +225,56 @@ function draw() {
 	if (start == 0) {
 		// HOST
 		if (ID == 'host'){
-			hostopen = ellipse(w/2,h/2,r,r);
-			
-			if (r < w || r < h) {
-				r = 1.1*r;
-			} else {
-				image(joinQRimg, joinw, h/2-250, 500, 500);
-				//image(logo, 3*w/4, h/5, 200, 200);
-				
-				if (pConnected == 1) {
-					image(pConimg,w/2,4*h/10,500,104.5);
-				}
-				
-				if (dConnected == 1) {
-					image(dConimg,w/2,6*h/10,500,104.5);
-				}	
-			}			
-		}
-		
-		if (ID == 'pooths' && clientsJoined == 3){
-			if (startButton == 0) { 
-				startButton = createButton('Start');
-				startButton.position(w/2-50,h/2-30);
-				startButton.size(100,60);
-				startButton.mousePressed(startGame);
-			}
-		} 
+      if (askedpin == 0) {
+        if (!pin) {
+          pin = createInput("", "password");
+          pin.position(w/2, 4*h/10);
+          pin.size(100,50);
+          pin.id('pin');
+                    
+        }
+        
+        fill(255);
+        textSize(30);
+        text("Enter PIN:", w/2+50,h/2-150)
+        
+        if (pin.value() == "2203"){
+          pin.hide();
+          askedpin = 1;
+          bgm.loop();
+        }
+      } else {
+        hostopen = ellipse(w/2,h/2,r,r);
+
+        if (r < w || r < h) {
+          r = 1.1*r;
+        } else {
+          image(joinQRimg, joinw, h/2-250, 500, 500);
+          //image(logo, 3*w/4, h/5, 200, 200);
+
+          if (pConnected == 1) {
+            image(pConimg,w/2,4*h/10,500,104.5);
+          }
+
+          if (dConnected == 1) {
+            image(dConimg,w/2,6*h/10,500,104.5);
+          }	
+        }			
+      }
+    }
+
+    if (ID == 'pooths' && clientsJoined == 3){
+      
+      if (startButton == 0) { 
+        startButton = createButton('Start');
+        startButton.position(w/2-50,h/2-30);
+        startButton.size(100,60);
+        startButton.id('startButton');
+        startButton.class('fade-in');
+        startButton.mousePressed(startGame);
+      }
+    } 
+    
 	} 
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,8 +318,9 @@ function draw() {
 			fill(20)
 			rect(0, 2*h/7, w, h);
 			textSize(70);
-			fill(255);
-			text('RESULTS:', w/2, 3*h/7);
+			fill(230);
+			text('Results:', w/2, 3*h/7);
+      textSize(50)
 			text('Dooths says:\n' + dAns, 1*w/6, 5*h/8)
 			text('Pooths says:\n' + pAns, 5*w/6, 5*h/8)
 			initLevel = 0;
@@ -295,15 +340,15 @@ function draw() {
 			text(dScore, 2*w/8, 4*h/8)
 			
 			if (cw == 1) {
-				fill(0,255,0);
+				fill(5,102,8);
 				textSize(60);
-				text('You were right.', w/2, 3*h/4);
+				text('Correct', w/2, 3*h/4);
 			}
 
 			if (cw == 0) {
-				fill(255,0,0);
+				fill(139,0,0);
 				textSize(60);
-				text('You were wrong', w/2, 3*h/4);
+				text('Wrong', w/2, 3*h/4);
 			}
 			
 			textSize(60);
@@ -345,17 +390,19 @@ function draw() {
 			if (inputCreated == 0) {
 				if (!inp) {
 					inp = createInput('','text');
+          inp.id('inp');
 				}
 				inp.show();
 				inp.value("");
-				inp.position(w/2-100, 4*h/10);
+				inp.position(w/2-150, 4*h/10);
 				inp.width = 200;
 				if (!subButton) {
 					subButton = createButton('submit');
+          subButton.id('subButton');
 					//console.log('button created');
 				}
 				subButton.show();
-				subButton.position(inp.x + inp.width, inp.y);
+				subButton.position(inp.x + inp.width + 5, inp.y);
 				subButton.mousePressed(submit);
 				noLoop();
 			}
@@ -374,17 +421,21 @@ function draw() {
 			if (!correctButton) {
 				correctButton = createButton('correct');
 				console.log('correctButton created');
+        correctButton.id('correctButton');
+        correctButton.class('fade-in');
 			}
 			correctButton.show();
-			correctButton.position(2*w/6,3*h/4);
+			correctButton.position(1*w/6-5,3*h/4);
 			correctButton.mousePressed(correct);
 			
 			if (!wrongButton){
 				wrongButton = createButton('wrong');
 				console.log('wrongButton created');
+        wrongButton.id('wrongButton');
+        wrongButton.class('fade-in');
 			}
 			wrongButton.show();
-			wrongButton.position(4*w/6,3*h/4);
+			wrongButton.position(4*w/6-5,3*h/4);
 			wrongButton.mousePressed(wrong);
 			noLoop();
 		}
@@ -487,7 +538,7 @@ function hostConn() {
 	socket.emit('ID', ID);
 	hideButtons();
 	zip.play();
-	bgm.loop();
+	// bgm.loop();
 }
 
 function poothsConn() {
