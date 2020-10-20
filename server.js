@@ -153,22 +153,13 @@ function newConnection(socket) {
 ////////////////////******INPUT********/////////////////////
 
 
-dquestions = [
-"Q1",
+let fs = require('fs');
 
-"Q2"
+dquestions = fs.readFileSync('./doothsQuestions.txt').toString('utf-8').split('\r\n');
+console.log(dquestions);
 
-];
+pquestions = fs.readFileSync('./poothsQuestions.txt').toString('utf-8').split('\r\n');
 
-
-
-pquestions = [
-
-"Q1",
-
-"Q2"
-
-];
 
 ///////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -189,4 +180,4 @@ for (let ii = 0; ii < dquestions.length; ii++) {
 
 qLength = questions.length;
 console.log(qLength);
-//console.log(questions);
+console.log(questions);
